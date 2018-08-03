@@ -1,0 +1,11 @@
+{{#each transactionsInDate as |transaction|}}
+  {{#unless transaction.deleted }}
+    {{#link-to "spending.edit-transaction" transaction.transactionId}}
+      <div class="container-body-item amount {{transaction.amount.currency}} {{if hasMoreItems "more-items"}}">
+        <div class="transaction-amount">{{format-money transaction.amount}}</div>
+        <div class="transaction-description">{{transaction.description}}</div>
+      </div>
+    {{/link-to}}
+  {{/unless}}
+{{/each}}
+<div class="more-items-text" data-text-template="{0} more ..." onclick={{openTransactionItemsPopup}}></div>

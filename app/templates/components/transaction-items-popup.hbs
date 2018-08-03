@@ -1,0 +1,28 @@
+{{#if show}}
+  {{#paper-dialog class="flex-50" onClose=close clickOutsideToClose=true opaque=false origin=popOriginId class="transaction-item-popup"}}
+    <div class="layout-row transaction-item-popup-header">
+      <div class="flex-80 popup-date">
+        <div class="day-of-week">{{moment-format day.date "ddd"}}</div>
+        <div class="day-of-month">{{moment-format day.date "D"}}</div>
+      </div>
+      <div class="flex-20 popup-close">
+        {{#paper-button iconButton=true mini=true onClick=close}}
+          {{paper-icon "close"}}
+          {{#paper-tooltip}}Close{{/paper-tooltip}}
+        {{/paper-button}}
+      </div>
+    </div>
+    <div class="layout-column layout-align-center-stretch transaction-item-popup-body container-body">
+      {{#each transactionsInDate as |transaction|}}
+        {{#unless transaction.deleted }}
+          {{#link-to "spending.edit-transaction" transaction.transactionId}}
+            <div class="container-body-item amount {{transaction.amount.currency}}">
+              <div class="transaction-amount">{{format-money transaction.amount}}</div>
+              <div class="transaction-description">{{transaction.description}}</div>
+            </div>
+          {{/link-to}}
+        {{/unless}}
+      {{/each}}
+    </div>
+  {{/paper-dialog}}
+{{/if}}

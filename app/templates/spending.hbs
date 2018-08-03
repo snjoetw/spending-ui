@@ -1,0 +1,78 @@
+{{#paper-toolbar class="page-toolbar"}}
+  {{#paper-toolbar-tools}}
+    <div class="layout-row layout-align-center-center">
+      {{#paper-button iconButton=true mini=true accent=false class="button button-menu"}}
+        {{paper-icon "menu"}}
+      {{/paper-button}}
+      {{#paper-button onClick=(action "goToToday") class="button button-today"}}Today{{/paper-button}}
+      {{#paper-button iconButton=true onClick=(action "previousMonth") class="button button-previous-month"}}
+        {{paper-icon "navigate_before"}}
+        {{#paper-tooltip}}Previous month{{/paper-tooltip}}
+      {{/paper-button}}
+      {{#paper-button iconButton=true onClick=(action "nextMonth") class="button button-next-month"}}
+        {{paper-icon "navigate_next"}}
+        {{#paper-tooltip}}Next month{{/paper-tooltip}}
+      {{/paper-button}}
+      <div class="current-year-month">
+        <strong>{{moment-format calendarDatum.moment "MMMM"}}</strong>
+        {{moment-format calendarDatum.moment "YYYY"}}
+      </div>
+    </div>
+    <span class="flex"></span>
+    {{#paper-menu as |menu|}}
+      {{#menu.trigger}}
+        {{#paper-button iconButton=true}}
+          {{paper-icon "more_vert"}}
+        {{/paper-button}}
+      {{/menu.trigger}}
+      {{#menu.content width=4 as |content|}}
+        {{#content.menu-item onClick="openSomething"}}
+          {{paper-icon "cloud_download"}}
+          <span>Import Transactions</span>
+        {{/content.menu-item}}
+      {{/menu.content}}
+    {{/paper-menu}}
+  {{/paper-toolbar-tools}}
+{{/paper-toolbar}}
+
+<div class="calendar">
+  <div class="calendar-sidebar">
+    {{#paper-list}}
+      {{#each transactionSummaryData as |summary|}}
+        {{summary-breakdown
+          summary=summary
+          filterCategoryIds=filterCategoryIds
+          doFilterTransaction=doFilterTransaction
+          classNameBindings="isFilteringCategory:filtering"
+          class="summary-breakdown"}}
+      {{/each}}
+    {{/paper-list}}
+  </div>
+  <div class="calendar-body weeks-{{calendarDatum.numberOfWeeks}}">
+    <div class="calendar-row-header">
+      {{#each calendarDatum.days as |day|}}
+        <div class="calendar-cell">
+          <div class="container"><span class="day {{if day.isToday "today"}}">{{day.name}}</span></div>
+        </div>
+      {{/each}}
+    </div>
+    {{#each calendarDatum.weeks as |week|}}
+      <div class="calendar-row">
+        {{#each week as |day|}}
+          <div id="day-{{moment-format day.date "MM-DD"}}" class="calendar-cell">
+            <div class="container {{if day.isWeekend "weekend"}} {{if day.isToday "today"}}" {{action "addTransaction" day.date on="doubleClick"}}>
+              <div class="container-header {{if day.isCurrentMonth "in-current-month"}}">
+                <div class="day">{{moment-format day.date "D"}}</div>
+              </div>
+              {{#if day.isCurrentMonth }}
+                {{transaction-items class="container-body" transactions=transactions day=day filterCategoryIds=filterCategoryIds openTransactionItemsPopup=(action 'openTransactionItemsPopup' day)}}
+              {{/if}}
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
+</div>
+{{outlet}}
+{{transaction-items-popup day=transactionItemsPopupDay transactions=transactions close=(action 'closeTransactionItemsPopup')}}

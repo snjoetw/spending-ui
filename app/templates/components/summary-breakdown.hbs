@@ -1,0 +1,23 @@
+{{#paper-subheader class="summary-header"}}
+  <h4>{{summary.transactionType}}</h4>
+{{/paper-subheader}}
+
+{{#each summary.categoryData as |categoryDatum|}}
+  {{category-item
+    categoryDatum=categoryDatum
+    doFilterTransaction=doFilterTransaction
+    filterCategoryIds=filterCategoryIds}}
+{{/each}}
+
+<md-list-item class="summary-total summary-item">
+  <div class="md-no-style md-ink-ripple">
+    <div class="md-list-item-inner">
+      <p>Total</p>
+      <div class="md-secondary-container">
+        {{#each totalAmounts as |amount|}}
+          {{amount-pill-badge amount=amount class="amount-badge"}}
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</md-list-item>

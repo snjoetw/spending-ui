@@ -8,8 +8,6 @@ module.exports = function(environment) {
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
-        // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -18,21 +16,20 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+      TRANSACTION_API_BASE_PATH: 'api/v1',
+      TRANSACTION_SUMMARY_API_BASE_PATH: 'api/v1',
+      IMPORTED_TRANSACTION_API_BASE_PATH: 'api/v1',
+      CATEGORY_API_BASE_PATH: 'api/v1',
+      SUPPORTED_CURRENCIES: ['CAD', 'USD', 'TWD'],
+      SUPPORTED_TRANSACTION_TYPES: ['DEBIT', 'CREDIT'],
     }
   };
 
   if (environment === 'development') {
-    // ENV.APP.LOG_RESOLVER = true;
-    // ENV.APP.LOG_ACTIVE_GENERATION = true;
-    // ENV.APP.LOG_TRANSITIONS = true;
-    // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-    // ENV.APP.LOG_VIEW_LOOKUPS = true;
+    ENV.APP.SPENDING_API_HOST = 'http://localhost:8080';
   }
 
   if (environment === 'test') {
-    // Testem prefers this...
     ENV.locationType = 'none';
 
     // keep test console output quieter
@@ -44,7 +41,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    // here you can enable a production-specific feature
+    ENV.APP.SPENDING_API_HOST = 'http://192.168.86.115:9000';
   }
 
   return ENV;

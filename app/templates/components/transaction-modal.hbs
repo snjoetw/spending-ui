@@ -1,0 +1,157 @@
+{{#paper-dialog class="flex-40" fullscreen=true}}
+  {{#paper-form onSubmit=(action "doSaveTransaction" transaction) as |form|}}
+    {{#paper-toolbar}}
+      {{#paper-toolbar-tools}}
+        <h2>{{transaction.description}}</h2>
+        <span class="flex"></span>
+        {{#paper-speed-dial
+          open=open
+          onToggle=(action (mut open)) as |dial|}}
+          {{#dial.trigger}}
+            {{#paper-button fab=false}}
+              {{paper-icon "menu"}}
+            {{/paper-button}}
+          {{/dial.trigger}}
+
+          {{#dial.actions as |actions|}}
+            {{#actions.action}}
+              {{#paper-button mini=true onClick=(action (mut showDialog) true)}}
+                {{paper-icon "people"}}
+              {{/paper-button}}
+            {{/actions.action}}
+
+            {{#actions.action}}
+              {{#paper-button mini=true onClick=(action (mut showDialog) true)}}
+                {{paper-icon "accessibility"}}
+              {{/paper-button}}
+            {{/actions.action}}
+
+            {{#actions.action}}
+              {{#paper-button mini=true onClick=(action (mut showDialog) true)}}
+                {{paper-icon "check-circle"}}
+              {{/paper-button}}
+            {{/actions.action}}
+          {{/dial.actions}}
+        {{/paper-speed-dial}}
+        {{#paper-menu as |menu|}}
+          {{#menu.trigger}}
+            {{#paper-button iconButton=true}}
+              {{paper-icon "local_phone"}}
+            {{/paper-button}}
+          {{/menu.trigger}}
+          {{#menu.content width=4 as |content|}}
+            {{#content.menu-item onClick=null}}
+              {{paper-icon "share"}}
+              <span>Clone</span>
+            {{/content.menu-item}}
+            {{#content.menu-item onClick=(action "doCancelTransaction" transaction)}}
+              {{paper-icon "close"}}
+              <span>Cancel</span>
+            {{/content.menu-item}}
+          {{/menu.content}}
+        {{/paper-menu}}
+      {{/paper-toolbar-tools}}
+    {{/paper-toolbar}}
+
+    {{#paper-dialog-content}}
+      <div class="layout-row">
+        <div class="layout-column flex-30">
+          {{#form.select
+            label="Type"
+            options=transactionTypes
+            selected=transaction.transactionType
+            onChange=(action (mut transaction.transactionType))
+            required=true
+          as |type|}}
+            {{type}}
+          {{/form.select}}
+        </div>
+        <div class="layout-column flex-70">
+          {{form.input label="Description" value=transaction.description
+                       onChange=(action (mut transaction.description)) required=true}}
+        </div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-column flex-20">
+          <md-input-container class="md-default-theme md-input-has-value ember-view">
+            <label class="md-required">Date</label>
+            {{pikaday-input
+              class="md-input"
+              format='YYYY-MM-DD'
+              value=transactionDate
+              onSelection=(action 'updateTransactionDate')
+              readonly=true
+              firstDay=0
+            }}
+            <div class="md-errors-spacer">
+            </div>
+          </md-input-container>
+        </div>
+        <div class="layout-column flex-20">
+          {{#form.select
+            label='Currency'
+            format='YYYY-MM-DD'
+            options=currencies
+            selected=transaction.amount.currency
+            onChange=(action (mut transaction.amount.currency))
+            required=true
+          as |currency|}}
+            {{currency}}
+          {{/form.select}}
+        </div>
+        <div class="layout-column flex-20">
+          {{form.input label="Amount" value=transaction.amount.amount
+                       onChange=(action (mut transaction.amount.amount)) required=true}}
+        </div>
+        <div class="layout-column flex-30">
+          {{#paper-switch value=transaction.deleted onChange=(action (mut transaction.deleted))}}
+            Split?
+          {{/paper-switch}}
+        </div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-column flex-100">
+          {{#form.autocomplete
+            customValidations=categoryValidation
+            options=categoryOptions
+            selected=transaction.category
+            searchField="completeName"
+            labelPath="completeName"
+            label="Category"
+            noMatchesMessage="Can't find this category"
+            allowClear=true
+            onSelectionChange=(action (mut transaction.category))
+            required=true
+          as |category autocomplete|}}
+            {{paper-autocomplete-highlight
+              label=category.completeName
+              searchText=autocomplete.searchText
+              flags="i"}}
+          {{/form.autocomplete}}
+        </div>
+      </div>
+      <div class="layout-row">
+        <div class="layout-column flex-100">
+          {{form.input label="Notes"
+                       textarea=true
+                       value=transaction.notes
+                       onChange=(action (mut transaction.notes))}}
+        </div>
+      </div>
+    {{/paper-dialog-content}}
+
+    {{#paper-dialog-actions class="layout-row"}}
+      {{#if doDeleteTransaction}}
+        <span class="flex">
+          {{#paper-button warn=true raised=true onClick=(action "doDeleteTransaction" transaction)}}
+            Delete{{/paper-button}}
+        </span>
+      {{/if}}
+      {{#paper-button raised=true
+                      onClick=(action "doCancelTransaction" transaction)}}Cancel{{/paper-button}}
+      {{#form.submit-button raised=true primary=true disabled=form.isInvalid}}
+        Save
+      {{/form.submit-button}}
+    {{/paper-dialog-actions}}
+  {{/paper-form}}
+{{/paper-dialog}}

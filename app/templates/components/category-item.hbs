@@ -1,0 +1,34 @@
+{{#paper-item
+  onClick=(action "doFilterTransaction" categoryDatum)
+  class = (concat 'summary-item ' (if categoryDatum.children ' nested') (if isExpanded ' expanded') (if isFiltered ' filtered'))  as |controls|}}
+  {{#if categoryDatum.children}}
+    <div class="md-secondary-container">
+      {{#controls.button secondary=true iconButton=true onClick=(action 'toggleNestedCategory') class="expand-toggle"}}
+        {{#if isExpanded}}
+          {{paper-icon "expand_more"}}
+        {{/if}}
+        {{#unless isExpanded}}
+          {{paper-icon "chevron_right"}}
+        {{/unless}}
+      {{/controls.button}}
+    </div>
+  {{/if}}
+  <p>{{categoryDatum.category.name}}</p>
+  <div class="md-secondary-container">
+    {{#each categoryDatum.amounts as |amount|}}
+      {{amount-pill-badge amount=amount class="amount-badge"}}
+    {{/each}}
+  </div>
+{{/paper-item}}
+{{#if categoryDatum.children}}
+  <div class="summary-sub-items">
+    {{#liquid-if isExpanded}}
+      {{#each categoryDatum.sortedChildren as |child|}}
+        {{category-item
+          categoryDatum=child
+          doFilterTransaction=doFilterTransaction
+          filterCategoryIds=filterCategoryIds}}
+      {{/each}}
+    {{/liquid-if}}
+  </div>
+{{/if}}
