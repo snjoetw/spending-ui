@@ -9,4 +9,4 @@ RUN ember install ember-paper
 
 EXPOSE 4200  
 
-CMD [ "ember", "server", "--live-reload=false" ]
+CMD [ "ember", "server", "--live-reload=false", "--environment=production" ]
