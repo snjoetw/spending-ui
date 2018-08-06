@@ -10,6 +10,10 @@ export default Controller.extend({
   }),
 
   actions: {
+    goToSpending: function() {
+      this.transitionToRoute('/');
+    },
+
     doCreateTransaction: function(importedTransaction) {
       let transaction = this.get('store').createRecord('transaction', {
         transactionDate: importedTransaction.transactionDate,

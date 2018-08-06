@@ -66,6 +66,10 @@ export default Controller.extend({
   }),
 
   actions: {
+    goToImportTransaction: function() {
+      this.transitionToRoute('import-transactions');
+    },
+
     nextMonth: function() {
       let m = this.get('calendarDatum').moment.clone().add(1, 'months');
       this.send('goToMonth', m.year(), m.month() + 1);
