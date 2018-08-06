@@ -31,11 +31,9 @@ export default Component.extend({
   },
 
   transactionsInDate: computed('transactions', 'day.date', 'filterCategoryIds', function() {
-    console.log('transactionsInDate 1');
     let transactions = this.get('transactions'),
       date = this.get('day.date'),
       filterCategoryIds = this.get('filterCategoryIds') || [];
-    console.log('transactionsInDate 2');
     return transactions.filter(function(transaction) {
       if (!transaction || transaction.deleted) return false;
 
