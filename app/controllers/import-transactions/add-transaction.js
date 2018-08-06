@@ -1,5 +1,4 @@
 import Controller from '@ember/controller';
-import {getOwner} from '@ember/application';
 import {bind} from '@ember/runloop';
 import {computed} from '@ember/object';
 
@@ -10,11 +9,12 @@ export default Controller.extend({
 
   doSaveTransaction: computed(function() {
     let self = this;
-    return bind(this, function(transaction, isDirty) {
+    return bind(this, function(transaction) {
       transaction.save().then(function() {
         self.importedTransaction.set('state', 'IMPORTED');
-        self.importedTransaction.save().then(function() {
-          getOwner(self).lookup('route:import-transactions').refresh();
+        self.importedTransaction.save().then(function(saved) {
+          let store = self.store;
+          store.push(store.normalize('imported-transaction', saved));
           self.transitionToRoute('import-transactions');
         });
       });
@@ -23,7 +23,7 @@ export default Controller.extend({
 
   doCancelTransaction: computed(function() {
     let self = this;
-    return bind(this, function(transaction, isDirty) {
+    return bind(this, function() {
       self.transitionToRoute('import-transactions');
     });
   }),

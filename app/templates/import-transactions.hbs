@@ -37,23 +37,25 @@
     <th>Account</th>
     <th></th>
   </tr>
-  {{#each pendingTransactions as |transaction|}}
-    <tr>
-      <td>{{transaction.transactionDate}}</td>
-      <td>{{transaction.transactionType}}</td>
-      <td>{{transaction.sourceCategoryName}}</td>
-      <td>{{transaction.category.name}}</td>
-      <td>{{transaction.description}}</td>
-      <td>{{format-money transaction.amount}}</td>
-      <td>{{transaction.account}}</td>
-      <td>
-        {{#paper-button iconButton=true onClick=(action "doCreateTransaction" transaction)}}
-          {{paper-icon "arrow_downward"}}
-        {{/paper-button}}
-        {{#paper-button iconButton=true onClick=(action "doDeleteTransaction" transaction)}}
-          {{paper-icon "delete"}}
-        {{/paper-button}}
-      </td>
-    </tr>
+  {{#each importedTransactions as |transaction|}}
+    {{#if transaction.isImportable}}
+      <tr>
+        <td>{{transaction.transactionDate}}</td>
+        <td>{{transaction.transactionType}}</td>
+        <td>{{transaction.sourceCategoryName}}</td>
+        <td>{{transaction.category.name}}</td>
+        <td>{{transaction.description}}</td>
+        <td>{{format-money transaction.amount}}</td>
+        <td>{{transaction.account}}</td>
+        <td>
+          {{#paper-button iconButton=true onClick=(action "doCreateTransaction" transaction)}}
+            {{paper-icon "arrow_downward"}}
+          {{/paper-button}}
+          {{#paper-button iconButton=true onClick=(action "doDeleteTransaction" transaction)}}
+            {{paper-icon "delete"}}
+          {{/paper-button}}
+        </td>
+      </tr>
+    {{/if}}
   {{/each}}
 </table>

@@ -1,13 +1,11 @@
 import Controller from '@ember/controller';
-import {computed} from '@ember/object';
 import {inject as service} from '@ember/service';
 
 export default Controller.extend({
   transactionHolder: service('transaction-holder'),
 
-  pendingTransactions: computed('importedTransactions', function() {
-    return this.get('importedTransactions').filter(t => t.state === 'PENDING');
-  }),
+  categories: null,
+  importedTransactions: null,
 
   actions: {
     goToSpending: function() {
@@ -32,8 +30,8 @@ export default Controller.extend({
     doDeleteTransaction: function(importedTransaction) {
       let self = this;
       importedTransaction.set('state', 'IGNORE');
-      importedTransaction.save().then(function() {
-        self.set('importedTransactions', self.get('store').peekAll('importedTransactions'));
+      importedTransaction.save().then(function(saved) {
+        self.store.push(self.store.normalize('imported-transaction', saved));
       });
     },
 
